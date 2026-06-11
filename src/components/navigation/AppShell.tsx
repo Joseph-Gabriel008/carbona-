@@ -35,7 +35,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <BottomNav />
       
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col w-full md:pl-64 pb-16 md:pb-0 min-h-screen bg-background text-foreground transition-all duration-300">
+      <main className="flex-1 flex flex-col w-full md:pl-64 pb-16 md:pb-0 min-h-screen bg-background text-foreground transition-colors duration-300">
         <AnimatePresence mode="wait">
           <motion.div
             key={pathname}

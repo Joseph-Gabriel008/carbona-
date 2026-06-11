@@ -351,7 +351,6 @@ html {
 ::-webkit-scrollbar-thumb {
   background: oklch(0.62 0.17 150 / 12%);
   border-radius: 9999px;
-  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 ::-webkit-scrollbar-thumb:hover {

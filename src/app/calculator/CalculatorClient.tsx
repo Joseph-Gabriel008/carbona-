@@ -655,7 +655,7 @@ export default function CalculatorClient() {
       </div>
 
       {/* Right Side Assessment Panel */}
-      <div className="w-full lg:w-96 bg-gradient-to-br from-brand-emerald/8 via-brand-blue/5 to-transparent border border-brand-emerald/15 p-8 rounded-3xl flex flex-col justify-between min-h-[380px] lg:sticky lg:top-8 shadow-md hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden z-10">
+      <div className="w-full lg:w-96 bg-gradient-to-br from-brand-emerald/8 via-brand-blue/5 to-transparent border border-brand-emerald/15 p-8 rounded-3xl flex flex-col justify-between min-h-[380px] lg:sticky lg:top-8 shadow-md relative overflow-hidden z-10">
         {/* Subtle decorative internal background glow */}
         <div className="absolute -top-12 -right-12 w-36 h-36 bg-brand-emerald/15 blur-2xl rounded-full pointer-events-none" />
         
