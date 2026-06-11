@@ -32,67 +32,55 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { xp, level } = useCarbonaStore();
-  const [darkMode, setDarkMode] = useState(false);
   const { nextLevelName, xpNeeded, percent } = getXPNeededForNextLevel(xp);
 
-  // Sync theme state on mount
+  // Lock theme preference to light mode on mount
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const timer = setTimeout(() => {
-      setDarkMode(isDark);
-    }, 0);
-    return () => clearTimeout(timer);
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('carbona-dark-mode', 'false');
   }, []);
 
-  const toggleTheme = () => {
-    const nextDark = !darkMode;
-    setDarkMode(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('carbona-dark-mode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('carbona-dark-mode', 'false');
-    }
-  };
-
   return (
-    <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-border/80 bg-card/60 backdrop-blur-md px-4 py-6 z-20 transition-all select-none">
+    <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-border/40 bg-card/40 backdrop-blur-xl px-4 py-8 z-20 transition-all select-none">
       {/* Brand Header */}
-      <Link href="/" className="flex items-center gap-2 px-3 mb-8 hover:opacity-90 transition-opacity">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-emerald text-white shadow-lg shadow-brand-emerald/25">
-          <Leaf className="h-5.5 w-5.5" />
+      <Link href="/" className="flex items-center gap-3 px-3 mb-10 hover:opacity-95 transition-all group">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-emerald text-white shadow-lg shadow-brand-emerald/30 group-hover:scale-105 active:scale-95 transition-transform duration-200">
+          <Leaf className="h-6 w-6 animate-float-slow" />
         </div>
         <div className="flex flex-col">
-          <span className="font-extrabold text-xl leading-none bg-gradient-to-r from-brand-emerald to-brand-blue bg-clip-text text-transparent">
+          <span className="font-extrabold text-2xl leading-none bg-gradient-to-r from-brand-emerald to-brand-blue bg-clip-text text-transparent tracking-tight">
             Carbona
           </span>
-          <span className="text-[10px] font-semibold text-muted-foreground tracking-wider uppercase mt-0.5">
+          <span className="text-[10px] font-bold text-muted-foreground/80 tracking-widest uppercase mt-1">
             Small Actions. Big Impact.
           </span>
         </div>
       </Link>
 
       {/* Nav Menu */}
-      <nav className="flex-1 space-y-1">
+      <nav className="flex-1 space-y-2">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
           return (
             <Link key={item.href} href={item.href} className="relative block">
-              <span className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-200 ${
+              <span className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:translate-x-1 ${
                 isActive 
-                  ? 'text-brand-emerald dark:text-white' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  ? 'text-brand-emerald dark:text-emerald-400 font-bold' 
+                  : 'text-muted-foreground/80 hover:text-foreground hover:bg-muted/30'
               }`}>
                 {isActive && (
                   <motion.span
                     layoutId="activeSidebarIndicator"
-                    className="absolute inset-0 bg-brand-emerald/10 dark:bg-brand-emerald/20 border-l-3 border-brand-emerald rounded-xl z-[-1]"
+                    className="absolute inset-0 bg-brand-emerald/8 dark:bg-brand-emerald/15 border-l-4 border-brand-emerald rounded-xl z-[-1] sidebar-active-glow"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
-                <Icon className={`h-5 w-5 ${isActive ? 'text-brand-emerald' : 'text-muted-foreground group-hover:text-foreground'}`} />
+                <Icon className={`h-5 w-5 transition-transform duration-300 ${
+                  isActive 
+                    ? 'text-brand-emerald dark:text-emerald-400 scale-110' 
+                    : 'text-muted-foreground/60 group-hover:text-foreground group-hover:scale-105'
+                }`} />
                 {item.label}
               </span>
             </Link>
@@ -101,43 +89,32 @@ export default function Sidebar() {
       </nav>
 
       {/* Gamification Progress Widget */}
-      <div className="mb-6 p-4 rounded-2xl bg-muted/30 border border-border/50">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+      <div className="mb-8 p-5 rounded-2xl bg-gradient-to-br from-brand-emerald/5 via-brand-emerald/8 to-transparent border border-brand-emerald/10 dark:border-brand-emerald/15 shadow-sm shadow-brand-emerald/5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+        <div className="flex justify-between items-center mb-2.5">
+          <span className="text-xs font-extrabold text-foreground tracking-wider">
             {level}
           </span>
-          <span className="text-[11px] font-semibold text-brand-emerald">
+          <span className="text-[11px] font-bold text-brand-emerald dark:text-emerald-400 bg-brand-emerald/10 dark:bg-brand-emerald/20 px-2 py-0.5 rounded-full">
             {xp} XP
           </span>
         </div>
-        <Progress value={percent} className="h-2 bg-muted-foreground/10" />
+        <Progress value={percent} className="h-2 bg-muted-foreground/15 dark:bg-muted/20" />
         {xpNeeded > 0 ? (
-          <p className="text-[10px] text-muted-foreground mt-2 font-medium">
+          <p className="text-[10px] text-muted-foreground/80 mt-3 font-semibold">
             {xpNeeded} XP to {nextLevelName}
           </p>
         ) : (
-          <p className="text-[10px] text-brand-emerald mt-2 font-bold uppercase tracking-wide">
+          <p className="text-[10px] text-brand-emerald dark:text-emerald-400 mt-3 font-bold uppercase tracking-wide">
             Maximum Level Reached!
           </p>
         )}
       </div>
 
-      {/* Footer / Theme Toggle */}
-      <div className="border-t border-border/80 pt-4 flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground">
-          Theme
+      {/* Footer / Copyright */}
+      <div className="border-t border-border/40 pt-5 flex items-center justify-center">
+        <span className="text-[10px] font-bold text-muted-foreground/60 tracking-wider uppercase">
+          © 2026 Carbona Platform
         </span>
-        <button 
-          onClick={toggleTheme}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 border border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
-          aria-label="Toggle Theme"
-        >
-          {darkMode ? (
-            <Sun className="h-4.5 w-4.5 text-amber-500" />
-          ) : (
-            <Moon className="h-4.5 w-4.5 text-blue-600" />
-          )}
-        </button>
       </div>
     </aside>
   );

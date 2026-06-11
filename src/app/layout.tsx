@@ -40,12 +40,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.getItem('carbona-dark-mode') === 'true' || 
-                    (!('carbona-dark-mode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('carbona-dark-mode', 'false');
               } catch (_) {}
             `,
           }}

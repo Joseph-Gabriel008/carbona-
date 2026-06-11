@@ -14,7 +14,11 @@ import {
   ArrowRight,
   Leaf,
   ShieldAlert,
-  Globe
+  Globe,
+  Sun,
+  Wind,
+  Zap,
+  Shield
 } from 'lucide-react';
 import { useCarbonaStore } from '@/lib/store';
 
@@ -52,13 +56,6 @@ export default function LandingClient() {
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-emerald/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[55vw] h-[55vw] rounded-full bg-brand-blue/10 blur-[120px] pointer-events-none" />
 
-      {/* Floating Leaves Background */}
-      <div className="absolute top-20 left-10 text-brand-emerald/10 animate-float pointer-events-none">
-        <Leaf className="h-16 w-16" />
-      </div>
-      <div className="absolute bottom-40 right-20 text-brand-blue/10 animate-float-slow pointer-events-none">
-        <Globe className="h-24 w-24" />
-      </div>
 
       {/* Landing Navbar */}
       <header className="w-full max-w-7xl mx-auto flex items-center justify-between px-6 py-6 z-10">
