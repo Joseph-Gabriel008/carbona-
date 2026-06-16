@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @module Sidebar
+ * @description Provides a fixed, desktop-oriented side navigation bar for the Carbona platform.
+ * Displays brand logo, links, gamification XP rank indicator progress bar, and system theme toggle.
+ */
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -29,7 +35,11 @@ const NAV_ITEMS = [
   { href: '/profile', label: 'My Profile', ariaLabel: 'My Profile navigation', icon: User },
 ];
 
-export default function Sidebar() {
+export interface SidebarProps {
+  // Parameterless design, declared for typing standardization across components.
+}
+
+export default function Sidebar(_props: SidebarProps) {
   const pathname = usePathname();
   const { xp, level } = useCarbonaStore();
   const { nextLevelName, xpNeeded, percent } = getXPNeededForNextLevel(xp);
@@ -41,7 +51,7 @@ export default function Sidebar() {
     setIsDark(stored === 'true');
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (): void => {
     const next = !isDark;
     setIsDark(next);
     if (next) {

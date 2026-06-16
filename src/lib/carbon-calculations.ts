@@ -1,4 +1,11 @@
 /**
+ * @module carbon-calculations
+ * @description Core mathematical module for calculating personal carbon emissions (kg CO2e)
+ * across multiple lifestyle categories (transportation, home energy, diet, shopping)
+ * and mapping users to descriptive Carbon Twin™ sustainability archetypes.
+ */
+
+/**
  * Input metrics gathered from the Carbon Footprint Calculator multi-step form.
  */
 export interface CalculatorInputs {
@@ -84,6 +91,13 @@ export const DEFAULT_INPUTS: CalculatorInputs = {
  * 
  * @param inputs - The raw calculator values submitted by the user.
  * @returns An EmissionResults object containing categorized emissions, total emissions, and a derived score/rating.
+ * 
+ * @source EPA Greenhouse Gas Inventory Factors (2023) - Passenger vehicle factors.
+ * @source DEFRA Greenhouse Gas Reporting Factors (2023) - Public transport bus/rail averages.
+ * @source IPCC AR6 WGIII (2022) - Aviation passenger transport average factors.
+ * @source Central Electricity Authority of India (CEA) (2023) / India MoEFCC - Grid emission intensity.
+ * @source Poore & Nemecek (2018) Science - Food and dietary footprint averages.
+ * 
  * @example
  * calculateEmissions(DEFAULT_INPUTS)
  * // returns { total: 102, transportation: 0, energy: 0, food: 102, shopping: 0, score: 93, rating: 'A+' }
@@ -178,6 +192,10 @@ export function calculateEmissions(inputs: CalculatorInputs): EmissionResults {
  * @param results - The calculated monthly emission totals.
  * @param inputs - The raw user calculator input fields.
  * @returns A TwinProfile archetype dataset mapping avatars, summaries, and action guidelines.
+ * 
+ * @source Central Electricity Authority of India (CEA) (2023) / India MoEFCC - National baseline target references.
+ * @source IPCC AR6 WGIII (2022) - Reference mitigation pathway profiles.
+ * 
  * @example
  * determineTwin({ score: 90, ...otherResults }, DEFAULT_INPUTS)
  * // returns TwinProfile with identity "Climate Hero"

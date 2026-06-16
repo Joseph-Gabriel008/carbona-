@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+/**
+ * Global HTTP Security Headers configured for Next.js routing.
+ * Ensures protection against clickjacking, MIME-sniffing, XSS, and unauthorized device access.
+ */
 const securityHeaders = [
   {
     key: 'X-Frame-Options',
@@ -15,7 +19,11 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()',
+    value: 'camera=(), microphone=()',
+  },
+  {
+    key: 'X-XSS-Protection',
+    value: '1; mode=block',
   },
   {
     key: 'Content-Security-Policy',

@@ -10,6 +10,16 @@ import {
 } from './carbon-calculations';
 
 /**
+ * Represents a single carbon footprint entry containing the inputs and calculated results.
+ */
+export interface CarbonEntry {
+  id: string;
+  date: string;
+  inputs: CalculatorInputs;
+  emissions: EmissionResults;
+}
+
+/**
  * Represents a gamified weekly sustainability task/challenge.
  */
 export interface Challenge {
@@ -23,13 +33,29 @@ export interface Challenge {
 }
 
 /**
- * Represents a single message in the AI Coach conversational log.
+ * Represents a sustainability badge unlocked by the user.
  */
-export interface CoachMessage {
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt: string;
+}
+
+/**
+ * Represents a single chat message in the Eco Coach conversation log.
+ */
+export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
   timestamp: string;
 }
+
+/**
+ * Represents a message in the AI Coach conversational log.
+ */
+export interface CoachMessage extends ChatMessage {}
 
 /**
  * List of weekly eco-challenges available to the user.
@@ -134,11 +160,35 @@ export interface CarbonaState {
   coachHistory: CoachMessage[];
 
   // Actions
+  /**
+   * @description Updates the user calculator input data, triggers carbon emission calculations,
+   * and determines the resulting Carbon Twin archetype profile.
+   */
   updateCalculator: (inputs: CalculatorInputs) => void;
+  
+  /**
+   * @description Toggles challenge status, adjusts XP scores, and unlocks badges/levels dynamically.
+   */
   toggleChallenge: (challengeId: string) => void;
+  
+  /**
+   * @description Appends a message to the AI coach logs conversation history. Caps stored records.
+   */
   addCoachMessage: (role: 'user' | 'model', text: string) => void;
+  
+  /**
+   * @description Clears existing conversation logs history for Coach Eco.
+   */
   clearCoachHistory: () => void;
+  
+  /**
+   * @description Pre-populates the Zustand store with realistic demo data, badges, and AI coach history.
+   */
   loadDemoProfile: () => void;
+  
+  /**
+   * @description Resets the Zustand state variables back to standard low-impact default settings.
+   */
   resetState: () => void;
 }
 
@@ -206,7 +256,7 @@ export const useCarbonaStore = create<CarbonaState>()(
        * @description Updates the user calculator input data, triggers carbon emission calculations,
        * and determines the resulting Carbon Twin archetype profile.
        */
-      updateCalculator: (inputs) => {
+      updateCalculator: (inputs: CalculatorInputs): void => {
         const emissions = calculateEmissions(inputs);
         const twin = determineTwin(emissions, inputs);
         set({
@@ -220,7 +270,7 @@ export const useCarbonaStore = create<CarbonaState>()(
       /**
        * @description Toggles challenge status, adjusts XP scores, and unlocks badges/levels dynamically.
        */
-      toggleChallenge: (challengeId) => {
+      toggleChallenge: (challengeId: string): void => {
         const challenge = ALL_CHALLENGES.find(c => c.id === challengeId);
         if (!challenge) return;
 
@@ -258,7 +308,7 @@ export const useCarbonaStore = create<CarbonaState>()(
       /**
        * @description Appends a message to the AI coach logs conversation history. Caps stored records.
        */
-      addCoachMessage: (role, text) => {
+      addCoachMessage: (role: 'user' | 'model', text: string): void => {
         const newMessage: CoachMessage = {
           role,
           text,
@@ -275,14 +325,14 @@ export const useCarbonaStore = create<CarbonaState>()(
       /**
        * @description Clears existing conversation logs history for Coach Eco.
        */
-      clearCoachHistory: () => {
+      clearCoachHistory: (): void => {
         set({ coachHistory: [] });
       },
 
       /**
        * @description Pre-populates the Zustand store with realistic demo data, badges, and AI coach history.
        */
-      loadDemoProfile: () => {
+      loadDemoProfile: (): void => {
         const demoInputs: CalculatorInputs = {
           carKm: 620,
           carType: 'petrol',
@@ -355,7 +405,7 @@ export const useCarbonaStore = create<CarbonaState>()(
       /**
        * @description Resets the Zustand state variables back to standard low-impact default settings.
        */
-      resetState: () => {
+      resetState: (): void => {
         set({
           hasData: false,
           demoLoaded: false,

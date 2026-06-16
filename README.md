@@ -27,6 +27,17 @@ Global temperatures have risen by ~1.1°C above pre-industrial baselines, driven
 6. **Try Demo Profile (Instant Access):**
    A one-click trial button pre-populating the Zustand store with realistic calculator inputs, completed challenges, badges, and AI coach history, allowing judges to evaluate the entire system instantly.
 
+### 📋 Features Comparison Matrix
+
+| Feature | Description | Interactive Element | Technology Utilized |
+| :--- | :--- | :--- | :--- |
+| **Footprint Calculator** | Multi-step form for transportation, energy, food, and shopping inputs | Form fields, active vehicle selector | Next.js Client Component, Zustand state |
+| **Carbon Twin™ Archetypes** | Identifies user persona from score range and input properties | Interactive archetype ID card, suggestions | JSDoc-documented matching algorithms |
+| **Coach Eco AI chat** | AI-driven dialogue offering targeted, localized micro-actions | Chat console, auto-scrolled logs, suggestions | Google Gemini 2.5 API + Fallback simulation |
+| **Analytics Dashboard** | Displays categorized monthly greenhouse gas output graphs | Responsive category selection tabs, chart tooltips | Recharts responsive SVGs, Framer Motion |
+| **Eco Challenges** | Gamified weekly list tasks grouped by XP levels and difficulties | Complete checklist triggers, XP progress indicators | Zustand persist store, LocalStorage |
+| **Telemetry Televiewer** | Telemetry tracking without exposing raw stack errors | Custom error boundary, data-digest telemetry | Next.js dynamic routing, global boundaries |
+
 ---
 
 ## 🛠️ Technical Stack & Architecture
@@ -98,6 +109,7 @@ This project is configured with a `netlify.toml` file leveraging `@netlify/plugi
 
 Carbona translates abstract carbon scores into measurable everyday achievements. By adopting recommended targets, users can realize significant carbon reductions:
 - **Active Commuting (Walking/Cycling instead of driving):** Replacing 50 km/month of private car travel with active commuting reduces emissions by **8.5 kg CO₂e/month** (~100 kg CO₂e annually).
+- **Public Transit Substitution:** Switching from a standard petrol car to public rail or bus transit for daily commutes prevents up to **100 kg CO₂e/month** (~**1.2 tons CO₂/year**).
 - **Optimal AC Operation:** Raising the thermostat from 22°C to 25°C and decreasing usage by 2 hours daily cuts household electrical load emissions by **36 kg CO₂e/month** (~430 kg CO₂e annually).
 - **Dietary Swaps:** Participating in Meatless Mondays (avoiding red meat once a week) cuts food emissions by **15 kg CO₂e/month** (~180 kg CO₂e annually).
 
@@ -107,6 +119,20 @@ Carbona translates abstract carbon scores into measurable everyday achievements.
 
 Our carbon equations are built upon reliable, peer-reviewed global scientific databases:
 1. **EPA Greenhouse Gas Inventory Factors:** Estimates private gasoline/diesel vehicle combustion output (Petrol: 0.17 kg CO₂/km; Diesel: 0.16 kg CO₂/km).
+   *Formula:* `Car Monthly Emissions = carKm * carFactor`
 2. **IPCC Aviation Emission Database:** Estimates commercial flight impacts based on average short/medium-haul travel statistics (90 kg CO₂/hour).
-3. **CEA (Central Electricity Authority of India) Grid Intensity Factors:** Calibrates electricity load outputs for localized grid conditions (0.40 kg CO₂/kWh).
+   *Formula:* `Flight Monthly Emissions = (flightHours * 90) / 12`
+3. **CEA (Central Electricity Authority of India) Grid Intensity Factors:** Calibrates electricity load outputs for localized grid conditions (0.40 kg CO₂/kWh general math; 0.82 kg CO₂/kWh for India-specific grid profiles).
+   *Formula:* `Electricity Monthly Emissions = electricityKwh * 0.40`
 4. **Poore & Nemecek (Science, 2018):** Establishes dietary lifecycle averages mapping agricultural feed, distribution, and packaging outputs (Vegan: 1.5 kg CO₂/day vs Meat-Lover: 7.0 kg CO₂/day).
+   *Formula:* `Diet Monthly Emissions = (dietFactor + dairyFactor) * 30`
+
+---
+
+## 🇮🇳 India Context
+
+Carbona benchmarks per-capita emission performance relative to India-specific baselines:
+- **India National average:** **1.9 tons** CO₂ per capita per year.
+- **Global average:** **4.7 tons** CO₂ per capita per year.
+- **Indian grid intensity:** Coal-dominant power plants emit **0.82 kg CO₂/kWh**, making home electricity reduction in Indian cities highly critical.
+- **Mumbai suburban rail:** Mumbai's rail lifeline carries 7.5 million passengers daily, saving **100,000 tons** of CO₂ annually compared to road travel.

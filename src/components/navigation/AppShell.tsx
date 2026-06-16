@@ -7,6 +7,10 @@ import BottomNav from './BottomNav';
 import { useCarbonaStore } from '@/lib/store';
 import { motion } from 'framer-motion';
 
+/**
+ * Root Shell layout wrapper handling navigation state synchronization,
+ * access redirections for blank profiles, and screen-reader accessibility hooks.
+ */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -23,15 +27,27 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [hasData, isLanding, pathname, router]);
 
   if (isLanding) {
-    return <main className="flex-1 w-full flex flex-col">{children}</main>;
+    return (
+      <>
+        <a 
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded"
+        >
+          Skip to main content
+        </a>
+        <main id="main-content" className="flex-1 w-full flex flex-col">
+          {children}
+        </main>
+      </>
+    );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-background md:flex-row w-full overflow-x-hidden">
-      {/* Accessibility Skip Link */}
+      {/* Skip Link is the very first child of the return wrapper */}
       <a 
-        href="#main-content" 
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-background focus:p-4 focus:border focus:rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-emerald"
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded"
       >
         Skip to main content
       </a>

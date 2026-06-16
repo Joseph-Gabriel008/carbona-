@@ -10,8 +10,9 @@ import {
 } from 'lucide-react';
 
 /**
- * Shared icon map matching string identifiers to Lucide React components.
+ * Shared icon map matching Carbon Twin archetype string identifiers to Lucide React component classes.
  * Used across TwinClient and ProfileClient components to display custom archetype avatars.
+ * Unit: Lucide Icon Component Mapping
  */
 export const AVATAR_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   compass: Compass,
@@ -21,4 +22,4 @@ export const AVATAR_ICONS: Record<string, React.ComponentType<{ className?: stri
   utensils: Utensils,
   zap: Zap,
   'shield-alert': ShieldAlert,
-};
+} as const;

@@ -1,3 +1,10 @@
+/**
+ * @module api-chat-route
+ * @description Secure API route handler for the Carbona platform's Eco Sustainability Coach.
+ * Integrates Google Gemini API using the @google/genai client with a fully local fallback
+ * conversational simulator to handle key outages or missing API keys securely.
+ */
+
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
@@ -9,22 +16,82 @@ import { GoogleGenAI } from '@google/genai';
  * - Return HTTP 429 Too Many Requests if the rate limit is exceeded.
  */
 
+interface EmissionsContext {
+  total: number;
+  score: number;
+  rating: string;
+  transportation: number;
+  energy: number;
+  food: number;
+  shopping: number;
+}
+
+interface TwinContext {
+  identity: string;
+}
+
+interface GamificationContext {
+  level: string;
+  xp: number;
+  completedChallenges: string[];
+}
+
+interface ChatMessageInput {
+  role: 'user' | 'model';
+  text: string;
+}
+
+interface ChatRequestBody {
+  messages?: ChatMessageInput[];
+  context?: {
+    emissions?: EmissionsContext;
+    twin?: TwinContext;
+    gamification?: GamificationContext;
+  };
+}
+
 export async function POST(req: Request) {
   try {
-    const { messages, context } = await req.json();
+    // SECURITY UPGRADE: Validate Content-Type
+    const contentType = req.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      return NextResponse.json(
+        { error: 'Content-Type must be application/json' },
+        { status: 415 }
+      );
+    }
 
-    if (!messages || !Array.isArray(messages)) {
+    // Explicit request body parsing using defined TypeScript types
+    const body = (await req.json()) as ChatRequestBody;
+    const { messages, context } = body;
+
+    // Validate presence and layout of messages array
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
         { error: 'Messages array is required' },
         { status: 400 }
       );
     }
 
-    const currentMessage = messages[messages.length - 1]?.text || '';
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || typeof lastMessage.text !== 'string') {
+      return NextResponse.json(
+        { error: 'Invalid message format' },
+        { status: 400 }
+      );
+    }
 
-    // INPUT LENGTH VALIDATION:
-    // Reject message texts exceeding 2000 characters
-    if (currentMessage.length > 2000) {
+    // Input sanitization: trim whitespace and reject empty messages
+    const sanitizedMessageText = lastMessage.text.trim();
+    if (sanitizedMessageText === '') {
+      return NextResponse.json(
+        { error: 'Message cannot be empty' },
+        { status: 400 }
+      );
+    }
+
+    // Message length cap: reject if > 2000 characters
+    if (sanitizedMessageText.length > 2000) {
       return NextResponse.json(
         { error: 'Message length exceeds limit of 2000 characters' },
         { status: 400 }
@@ -39,9 +106,9 @@ export async function POST(req: Request) {
     const gamification = context?.gamification || { level: 'Seedling', xp: 0, completedChallenges: [] };
 
     // Format the messages to the structure expected by @google/genai
-    const contents = messages.map((m: { role: string; text: string }) => ({
+    const contents = messages.map((m, idx) => ({
       role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.text }]
+      parts: [{ text: idx === messages.length - 1 ? sanitizedMessageText : m.text }]
     }));
 
     // System instruction injected to align the AI behavior
@@ -92,13 +159,13 @@ Tone and Guidelines:
     } catch (apiError) {
       console.warn('Gemini API call failed or key is missing. Using local fallback response. Error:', apiError);
       
-      // Smart local response simulator
-      const responseText = simulateEcoResponse(currentMessage.toLowerCase(), emissions, twin, gamification);
+      // Fallback: Use smart local response simulator when connection is down or key is invalid
+      const responseText = simulateEcoResponse(sanitizedMessageText.toLowerCase(), emissions, twin, gamification);
       return NextResponse.json({ text: responseText, isFallback: true });
     }
 
   } catch (error) {
-    // Log the error securely internally on the server console
+    // Log the error securely internally on the server console for debugging
     console.error('API Error:', error);
     
     // SECURITY UPGRADE:
@@ -120,33 +187,23 @@ export async function GET() {
   );
 }
 
-interface EmissionsContext {
-  total: number;
-  score: number;
-  rating: string;
-  transportation: number;
-  energy: number;
-  food: number;
-  shopping: number;
-}
-
-interface TwinContext {
-  identity: string;
-}
-
-interface GamificationContext {
-  level: string;
-  xp: number;
-  completedChallenges: string[];
-}
-
+/**
+ * Simulates customized sustainability coach advice based on keywords and user footprint context.
+ * Useful as a fail-safe mechanism if API key is not configured or network request fails.
+ * 
+ * @param message - The sanitized lowercase message text sent by the user.
+ * @param emissions - The current categorized carbon emissions.
+ * @param twin - The user's Carbon Twin archetype.
+ * @param gamification - The current XP progress and badge metadata.
+ * @returns A structured Markdown response with concrete targets.
+ */
 function simulateEcoResponse(
   message: string, 
   emissions: EmissionsContext, 
   twin: TwinContext, 
   gamification: GamificationContext
 ): string {
-  // Identify highest emission category
+  // Sort and identify the highest emissions category to provide targeted help
   const categories = [
     { name: 'Transportation', value: emissions.transportation },
     { name: 'Home Energy', value: emissions.energy },
@@ -156,6 +213,7 @@ function simulateEcoResponse(
   categories.sort((a, b) => b.value - a.value);
   const highest = categories[0];
 
+  // KEYWORD ROUTE 1: Reduction and habit improvement requests
   if (message.includes('reduce') || message.includes('help') || message.includes('how can i')) {
     return `Hello! As your sustainability coach, let's analyze your current monthly footprint of **${emissions.total} kg CO₂**.
 
@@ -180,6 +238,7 @@ highest.name === 'Food & Diet' ?
 * You're currently a **${gamification.level}** with **${gamification.xp} XP**. Completing this challenge will reward you with more XP and help you level up!`;
   }
 
+  // KEYWORD ROUTE 2: Score analysis and profile breakdowns
   if (message.includes('score') || message.includes('analyze') || message.includes('carbon score')) {
     return `### Carbon Score Analysis
 
@@ -199,6 +258,7 @@ To boost your score to the next tier:
 2. Complete the **Vampire Slayer** easy challenge to shave off phantom energy consumption.`;
   }
 
+  // KEYWORD ROUTE 3: Habits or general alternatives
   if (message.includes('habit') || message.includes('alternative') || message.includes('improve')) {
     return `### Small Habits. Big Cumulative Impact.
 
@@ -212,6 +272,7 @@ Let's focus on micro-habits you can integrate starting today:
 *Would you like me to suggest specific challenges from the list to help you build these habits?*`;
   }
 
+  // DEFAULT FALLBACK ROUTE: Standard intro instructions
   return `Hello! I am **Eco**, your AI Sustainability Coach. 
 
 I've analyzed your Carbon Twin identity (**${twin.identity}**) and your monthly emissions (**${emissions.total} kg CO₂**). 

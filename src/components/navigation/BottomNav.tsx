@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @module BottomNav
+ * @description Provides a mobile-responsive bottom navigation bar that appears on sub-landing pages.
+ * Handles responsive layout updates, micro-animations, and theme toggling options.
+ */
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,7 +14,7 @@ import {
   LayoutDashboard, 
   Calculator, 
   Bot, 
-  Trophy,
+  Trophy, 
   MoreHorizontal,
   Fingerprint,
   BookOpen,
@@ -31,7 +37,11 @@ const MORE_ITEMS = [
   { href: '/profile', label: 'My Profile', ariaLabel: 'My Profile navigation', icon: User },
 ];
 
-export default function BottomNav() {
+export interface BottomNavProps {
+  // Currently parameterless, interface provided for type safety and scalability.
+}
+
+export default function BottomNav(_props: BottomNavProps) {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
 
@@ -40,7 +50,7 @@ export default function BottomNav() {
 
   const isMoreActive = MORE_ITEMS.some(item => item.href === pathname);
 
-  const toggleTheme = () => {
+  const toggleTheme = (): void => {
     const isDark = document.documentElement.classList.contains('dark');
     if (isDark) {
       document.documentElement.classList.remove('dark');

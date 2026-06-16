@@ -46,7 +46,7 @@ export default function TwinClient() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 80, damping: 15 }}
-          className="md:col-span-2 glass-panel p-6 rounded-[2.5rem] relative overflow-hidden flex flex-col justify-between aspect-[3/4] border border-brand-emerald/20 shadow-lg glow-emerald"
+          className="md:col-span-2 glass-panel p-6 rounded-[2.5rem] relative overflow-hidden flex flex-col justify-between min-h-[500px] border border-brand-emerald/20 shadow-lg glow-emerald"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-brand-emerald/15 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-blue/15 rounded-full blur-2xl pointer-events-none" />
@@ -65,34 +65,61 @@ export default function TwinClient() {
             </div>
           </div>
 
-          <div className="my-6 flex flex-col items-center justify-center py-6 border border-foreground/5 bg-background/30 rounded-3xl relative overflow-hidden backdrop-blur-sm">
+          <div className="my-5 flex flex-col items-center justify-center py-5 border border-foreground/5 bg-background/30 rounded-3xl relative overflow-hidden backdrop-blur-sm">
             <div className="absolute inset-0 bg-radial-gradient from-brand-emerald/10 to-transparent pointer-events-none" />
             
             <div className="relative">
               <div className="absolute inset-[-10px] rounded-full border border-dashed border-brand-emerald/30 animate-[spin_12s_linear_infinite]" />
               <div className="absolute inset-[-18px] rounded-full border border-dotted border-brand-blue/20 animate-[spin_20s_linear_infinite_reverse]" />
               
-              <div className="h-20 w-20 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center shadow-inner">
-                <IconComponent className="h-10 w-10" />
+              <div className="h-18 w-18 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center shadow-inner">
+                <IconComponent className="h-9 w-9" />
               </div>
             </div>
             
-            <span className="text-xs font-semibold text-muted-foreground mt-6 uppercase tracking-wider">
+            <span className="text-[10px] font-semibold text-muted-foreground mt-4 uppercase tracking-wider">
               Score Rank
             </span>
-            <span className="text-2xl font-black text-foreground mt-0.5">
+            <span className="text-xl font-black text-foreground mt-0.5">
               {emissions.score} / 100
             </span>
           </div>
 
-          <div className="border-t border-foreground/10 pt-4 flex justify-between text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            <div>
-              <span className="block text-[8px] text-muted-foreground/60 mb-0.5">Footprint</span>
-              <span className="text-foreground font-bold">{emissions.total} kg CO₂ / mo</span>
+          {/* Comparison Stats & Archetype reduction tip */}
+          <div className="space-y-3.5 mt-1">
+            <div className="border-t border-foreground/10 pt-3 flex justify-between text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              <div>
+                <span className="block text-[8px] text-muted-foreground/60 mb-0.5">Footprint</span>
+                <span className="text-foreground font-bold">{emissions.total} kg CO₂ / mo</span>
+              </div>
+              <div className="text-right">
+                <span className="block text-[8px] text-muted-foreground/60 mb-0.5">Rating</span>
+                <span className="text-brand-emerald font-black text-xs">{emissions.rating} Rank</span>
+              </div>
             </div>
-            <div className="text-right">
-              <span className="block text-[8px] text-muted-foreground/60 mb-0.5">Rating</span>
-              <span className="text-brand-emerald font-black text-xs">{emissions.rating} Rank</span>
+
+            <div className="border-t border-foreground/10 pt-3 flex justify-between text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              <div>
+                <span className="block text-[8px] text-muted-foreground/60 mb-0.5">India Avg</span>
+                <span className="text-foreground font-bold">1.9t / yr</span>
+              </div>
+              <div className="text-right">
+                <span className="block text-[8px] text-muted-foreground/60 mb-0.5">Global Avg</span>
+                <span className="text-foreground font-bold">4.7t / yr</span>
+              </div>
+            </div>
+
+            <div className="border-t border-foreground/10 pt-3">
+              <span className="block text-[8px] text-muted-foreground/60 mb-0.5 uppercase font-semibold">Archetype Tip</span>
+              <p className="text-[10px] text-brand-emerald font-semibold leading-tight">
+                {twin.identity === 'Climate Hero' && "You're below India's average — inspire others!"}
+                {twin.identity === 'Green Warrior' && "You're near India's average — keep pushing for zero-tailpipe travel!"}
+                {twin.identity === 'Carbon Heavy Traveler' && "Offset high flight emissions by supporting India's green grid transition!"}
+                {twin.identity === 'Conscious Consumer' && "Extend clothing and electronic lifecycles to minimize manufacturing impacts!"}
+                {twin.identity === 'Conscious Eater' && "Adopt vegetarian weekdays to reduce agricultural footprint!"}
+                {twin.identity === 'Energy Pioneer' && "Unplug phantom standby draws to drop below average grid intensity!"}
+                {twin.identity === 'Eco Explorer' && "Walk for trips under 3km and complete simple eco swaps this week!"}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -185,15 +212,15 @@ export default function TwinClient() {
             >
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
                 <Globe className="h-4 w-4 text-brand-emerald" />
-                Comparison (India Average)
+                Comparison & Context
               </h4>
               <div className="space-y-1">
                 <p className="text-xs text-foreground font-semibold leading-relaxed">
                   Your annual footprint: <strong className="text-brand-emerald">{userAnnualTons} tons</strong> CO₂e/year.
                 </p>
                 <p className="text-[10px] text-muted-foreground leading-normal font-medium">
-                  India's national per-capita average is <strong className="text-foreground">1.9 tons</strong> CO₂e/year. 
-                  You are {diffPercent <= 0 ? `${Math.abs(diffPercent)}% below` : `${diffPercent}% above`} the national average.
+                  India's national per-capita average is <strong className="text-foreground">1.9 tons</strong> CO₂e/year (global average is <strong className="text-foreground">4.7 tons</strong> CO₂e/year). 
+                  You are {diffPercent <= 0 ? `${Math.abs(diffPercent)}% below` : `${diffPercent}% above`} India's average.
                 </p>
               </div>
             </motion.div>
