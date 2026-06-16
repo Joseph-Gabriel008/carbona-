@@ -4,33 +4,24 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
-  Compass, 
-  Leaf, 
-  Plane, 
-  ShoppingBag, 
-  Utensils, 
-  Zap, 
-  ShieldAlert,
   ArrowRight,
   TrendingDown,
   Award,
-  Sparkles
+  Sparkles,
+  Leaf,
+  Globe
 } from 'lucide-react';
 import { useCarbonaStore } from '@/lib/store';
-
-const AVATAR_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  compass: Compass,
-  leaf: Leaf,
-  plane: Plane,
-  'shopping-bag': ShoppingBag,
-  utensils: Utensils,
-  zap: Zap,
-  'shield-alert': ShieldAlert
-};
+import { AVATAR_ICONS } from '@/lib/constants';
 
 export default function TwinClient() {
   const { twin, emissions } = useCarbonaStore();
-  const IconComponent = AVATAR_ICONS[twin.avatar] || Compass;
+  const IconComponent = AVATAR_ICONS[twin.avatar] || AVATAR_ICONS['compass'];
+
+  // Calculate annual metrics for user footprint and national target comparison
+  const userAnnualTons = ((emissions.total * 12) / 1000).toFixed(2);
+  const indiaAverage = 1.9;
+  const diffPercent = Math.round(((parseFloat(userAnnualTons) - indiaAverage) / indiaAverage) * 100);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
@@ -161,6 +152,50 @@ export default function TwinClient() {
                   </li>
                 ))}
               </ul>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="bg-brand-blue/5 border border-brand-blue/10 p-5 rounded-3xl"
+            >
+              <h4 className="text-xs font-bold uppercase tracking-wider text-brand-blue mb-3 flex items-center gap-1.5">
+                <Leaf className="h-4 w-4" />
+                Annual Reduction Target
+              </h4>
+              <p className="text-xs text-foreground font-semibold leading-relaxed">
+                {twin.identity === 'Climate Hero' && "You can reduce 0.5t CO₂/year by transitioning to clean solar micro-generation."}
+                {twin.identity === 'Green Warrior' && "You can reduce 1.2t CO₂/year by cutting AC usage by 3 hours daily and washing laundry in cold water."}
+                {twin.identity === 'Carbon Heavy Traveler' && "You can reduce 3.4t CO₂/year by rail transit substitution and using carbon-offset flight certificates."}
+                {twin.identity === 'Conscious Consumer' && "You can reduce 1.8t CO₂/year by extending clothes use for 9 months and consolidating parcel deliveries."}
+                {twin.identity === 'Conscious Eater' && "You can reduce 2.1t CO₂/year by adopting vegan weekdays and composting food waste."}
+                {twin.identity === 'Energy Pioneer' && "You can reduce 2.8t CO₂/year by unplugging vampire loads and upgrading to energy-star appliances."}
+                {twin.identity === 'Eco Explorer' && "You can reduce 1.5t CO₂/year by completing easy challenges and choosing active commuting."}
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="bg-card/60 border border-border/80 p-5 rounded-3xl"
+            >
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+                <Globe className="h-4 w-4 text-brand-emerald" />
+                Comparison (India Average)
+              </h4>
+              <div className="space-y-1">
+                <p className="text-xs text-foreground font-semibold leading-relaxed">
+                  Your annual footprint: <strong className="text-brand-emerald">{userAnnualTons} tons</strong> CO₂e/year.
+                </p>
+                <p className="text-[10px] text-muted-foreground leading-normal font-medium">
+                  India's national per-capita average is <strong className="text-foreground">1.9 tons</strong> CO₂e/year. 
+                  You are {diffPercent <= 0 ? `${Math.abs(diffPercent)}% below` : `${diffPercent}% above`} the national average.
+                </p>
+              </div>
             </motion.div>
           </div>
 

@@ -62,7 +62,8 @@ const TOPICS: Topic[] = [
     details: [
       'Solar panels capture photovoltaic energy, generating electricity without burning fuel or producing carbon outputs.',
       'Wind power utilizes clean kinetic energy, representing one of the fastest-growing utility-scale renewable sources.',
-      'Battery energy storage projects stabilize renewable output by saving excess power for peak demand hours.'
+      'Battery energy storage projects stabilize renewable output by saving excess power for peak demand hours.',
+      "India Grid Factor: India's grid remains coal-heavy with an intensity factor of ~0.75 kg CO₂/kWh. Upgrading to rooftop solar panels in Indian cities offsets twice the carbon amount per kWh compared to countries with cleaner baseline grids."
     ],
     impact: 'Transitioning home electricity to solar can reduce a typical house footprint by up to 2.8 tons of CO₂ annually.',
     action: 'Unplug idle electronics to stop phantom power and opt for green electrical utilities where available.'
@@ -90,7 +91,8 @@ const TOPICS: Topic[] = [
     details: [
       'Active travel (walking and cycling) produces zero emissions and improves cardiovascular health.',
       'Rail transit is highly efficient, emitting up to 80% less carbon per passenger-km compared to private internal combustion cars.',
-      'Electric vehicles charge from the local grid. While grid mix varies, EVs produce significantly lower lifetime footprints than petrol/diesel cars.'
+      'Electric vehicles charge from the local grid. While grid mix varies, EVs produce significantly lower lifetime footprints than petrol/diesel cars.',
+      "Monsoon Traffic Fact: Traffic congestion during monsoon seasons in major Indian cities increases vehicle idling times, which spikes tailpipe emissions. Choosing active transit or metro systems during gridlocks prevents high idle fuel consumption."
     ],
     impact: 'Replacing 3,000km of private gasoline driving with rail transit prevents approximately 400kg of CO₂ from entering the atmosphere.',
     action: 'Optimize trips by walking for distances under 3km and scheduling rail/bus travel for commutes.'

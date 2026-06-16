@@ -9,6 +9,9 @@ import {
   determineTwin 
 } from './carbon-calculations';
 
+/**
+ * Represents a gamified weekly sustainability task/challenge.
+ */
 export interface Challenge {
   id: string;
   title: string;
@@ -19,12 +22,18 @@ export interface Challenge {
   category: 'transportation' | 'energy' | 'food' | 'shopping';
 }
 
+/**
+ * Represents a single message in the AI Coach conversational log.
+ */
 export interface CoachMessage {
   role: 'user' | 'model';
   text: string;
   timestamp: string;
 }
 
+/**
+ * List of weekly eco-challenges available to the user.
+ */
 export const ALL_CHALLENGES: Challenge[] = [
   {
     id: 'reusable-bottle',
@@ -105,6 +114,9 @@ export const ALL_CHALLENGES: Challenge[] = [
   }
 ];
 
+/**
+ * Zustand global state interface for the Carbona platform.
+ */
 export interface CarbonaState {
   hasData: boolean;
   demoLoaded: boolean;
@@ -130,6 +142,12 @@ export interface CarbonaState {
   resetState: () => void;
 }
 
+/**
+ * Determines the user level title based on their total XP metrics.
+ * 
+ * @param xp - The current experience points of the user.
+ * @returns The level name corresponding to the user's XP.
+ */
 const getLevelFromXP = (xp: number): 'Seedling' | 'Eco Learner' | 'Green Warrior' | 'Planet Guardian' | 'Climate Hero' => {
   if (xp >= 1500) return 'Climate Hero';
   if (xp >= 900) return 'Planet Guardian';
@@ -138,6 +156,12 @@ const getLevelFromXP = (xp: number): 'Seedling' | 'Eco Learner' | 'Green Warrior
   return 'Seedling';
 };
 
+/**
+ * Calculates details regarding the next level rank and XP progress remaining.
+ * 
+ * @param xp - The current experience points of the user.
+ * @returns An object containing the next level name, XP needed, and current level percent progress.
+ */
 export const getXPNeededForNextLevel = (xp: number): { nextLevelName: string; xpNeeded: number; percent: number } => {
   if (xp >= 1500) return { nextLevelName: 'Max Level', xpNeeded: 0, percent: 100 };
   if (xp >= 900) return { nextLevelName: 'Climate Hero', xpNeeded: 1500 - xp, percent: Math.round(((xp - 900) / 600) * 100) };
@@ -146,6 +170,9 @@ export const getXPNeededForNextLevel = (xp: number): { nextLevelName: string; xp
   return { nextLevelName: 'Eco Learner', xpNeeded: 150 - xp, percent: Math.round((xp / 150) * 100) };
 };
 
+/**
+ * Global Zustand store preserving state logic across page loads via LocalStorage.
+ */
 export const useCarbonaStore = create<CarbonaState>()(
   persist(
     (set, get) => ({
@@ -175,6 +202,10 @@ export const useCarbonaStore = create<CarbonaState>()(
       completedChallenges: [],
       coachHistory: [],
 
+      /**
+       * @description Updates the user calculator input data, triggers carbon emission calculations,
+       * and determines the resulting Carbon Twin archetype profile.
+       */
       updateCalculator: (inputs) => {
         const emissions = calculateEmissions(inputs);
         const twin = determineTwin(emissions, inputs);
@@ -186,6 +217,9 @@ export const useCarbonaStore = create<CarbonaState>()(
         });
       },
 
+      /**
+       * @description Toggles challenge status, adjusts XP scores, and unlocks badges/levels dynamically.
+       */
       toggleChallenge: (challengeId) => {
         const challenge = ALL_CHALLENGES.find(c => c.id === challengeId);
         if (!challenge) return;
@@ -221,21 +255,33 @@ export const useCarbonaStore = create<CarbonaState>()(
         });
       },
 
+      /**
+       * @description Appends a message to the AI coach logs conversation history. Caps stored records.
+       */
       addCoachMessage: (role, text) => {
         const newMessage: CoachMessage = {
           role,
           text,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
+        const updatedHistory = [...get().coachHistory, newMessage];
+        // Cap history at 50 messages to prevent localStorage overflow
+        const cappedHistory = updatedHistory.length > 50 ? updatedHistory.slice(-50) : updatedHistory;
         set({
-          coachHistory: [...get().coachHistory, newMessage]
+          coachHistory: cappedHistory
         });
       },
 
+      /**
+       * @description Clears existing conversation logs history for Coach Eco.
+       */
       clearCoachHistory: () => {
         set({ coachHistory: [] });
       },
 
+      /**
+       * @description Pre-populates the Zustand store with realistic demo data, badges, and AI coach history.
+       */
       loadDemoProfile: () => {
         const demoInputs: CalculatorInputs = {
           carKm: 620,
@@ -256,7 +302,6 @@ export const useCarbonaStore = create<CarbonaState>()(
         const emissions = calculateEmissions(demoInputs);
         const twin = determineTwin(emissions, demoInputs);
 
-        // Pre-complete some challenges to level them up to Level 2 "Eco Learner"
         const demoCompletedChallenges = ['reusable-bottle', 'unplug-idle', 'local-produce'];
         let demoXp = 0;
         const demoBadges: string[] = [];
@@ -272,7 +317,6 @@ export const useCarbonaStore = create<CarbonaState>()(
 
         const demoLevel = getLevelFromXP(demoXp);
 
-        // Prepopulate a helpful coach history
         const demoHistory: CoachMessage[] = [
           {
             role: 'user',
@@ -308,6 +352,9 @@ export const useCarbonaStore = create<CarbonaState>()(
         });
       },
 
+      /**
+       * @description Resets the Zustand state variables back to standard low-impact default settings.
+       */
       resetState: () => {
         set({
           hasData: false,

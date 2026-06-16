@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
+/**
+ * RATE LIMITING IMPLEMENTATION NOTE:
+ * Rate limiting logic should be integrated here (e.g., using Redis Token Bucket, Upstash, or Vercel KV).
+ * - Identify client requests using client IP address: `req.headers.get('x-forwarded-for')` or user authentication tokens.
+ * - Allow a maximum threshold (e.g. 5 prompts per minute per IP).
+ * - Return HTTP 429 Too Many Requests if the rate limit is exceeded.
+ */
+
 export async function POST(req: Request) {
   try {
     const { messages, context } = await req.json();
@@ -13,6 +21,16 @@ export async function POST(req: Request) {
     }
 
     const currentMessage = messages[messages.length - 1]?.text || '';
+
+    // INPUT LENGTH VALIDATION:
+    // Reject message texts exceeding 2000 characters
+    if (currentMessage.length > 2000) {
+      return NextResponse.json(
+        { error: 'Message length exceeds limit of 2000 characters' },
+        { status: 400 }
+      );
+    }
+
     const apiKey = process.env.GEMINI_API_KEY;
 
     // Check if context is available, set defaults if not
@@ -50,11 +68,6 @@ Tone and Guidelines:
 5. Keep answers concise, highly readable, and structured. Avoid lengthy intros or sign-offs.
 `;
 
-    // If API Key is missing or default, trigger the fallback response simulation
-    if (!apiKey || apiKey === 'your_api_key_here') {
-      // API key missing or placeholder
-    }
-
     try {
       if (!apiKey || apiKey === 'your_api_key_here') {
         throw new Error('API_KEY_MISSING');
@@ -85,12 +98,26 @@ Tone and Guidelines:
     }
 
   } catch (error) {
+    // Log the error securely internally on the server console
     console.error('API Error:', error);
+    
+    // SECURITY UPGRADE:
+    // Never return the stack trace or raw error message details back to the client.
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : String(error) },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
+}
+
+/**
+ * Rejects GET requests explicitly with a 405 Method Not Allowed error.
+ */
+export async function GET() {
+  return NextResponse.json(
+    { error: 'Method Not Allowed' },
+    { status: 405 }
+  );
 }
 
 interface EmissionsContext {

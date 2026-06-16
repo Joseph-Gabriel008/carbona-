@@ -4,8 +4,6 @@ import { Suspense } from "react";
 import "./globals.css";
 import AppShell from "@/components/navigation/AppShell";
 
-export const unstable_instant = false;
-
 const poppins = Poppins({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -40,8 +38,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('carbona-dark-mode', 'false');
+                const stored = localStorage.getItem('carbona-dark-mode');
+                if (stored === 'true') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
               } catch (_) {}
             `,
           }}

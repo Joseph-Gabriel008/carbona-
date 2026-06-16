@@ -218,6 +218,7 @@ export default function ChallengesClient() {
                       : 'border-border/80 bg-background hover:border-brand-emerald hover:text-brand-emerald text-muted-foreground'
                   }`}
                   aria-label="Toggle Complete Challenge"
+                  title="Toggle Complete Challenge"
                 >
                   <CheckCircle2 className="h-5.5 w-5.5" />
                 </button>

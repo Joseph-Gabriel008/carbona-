@@ -222,7 +222,10 @@ export default function DashboardClient() {
                 </div>
               )
             ) : (
-              <div className="h-48" />
+              <div className="h-48 flex flex-col items-center justify-center gap-3">
+                <div className="h-[150px] w-[150px] rounded-full bg-muted/60 animate-pulse" />
+                <div className="h-3 w-24 bg-muted/60 rounded-full animate-pulse" />
+              </div>
             )}
 
             <div className="w-full grid grid-cols-2 gap-3.5 mt-4">
@@ -241,10 +244,10 @@ export default function DashboardClient() {
           <CardHeader className="pb-2">
             <CardTitle className="text-md font-extrabold flex items-center gap-2">
               <TrendingDown className="h-4.5 w-4.5 text-brand-emerald" />
-              Reduction Trajectory & Target
+              Projected Reduction Path
             </CardTitle>
             <CardDescription className="text-[10px] font-semibold">
-              Simulated progression timeline comparing historical carbon with target reductions
+              Simulated path showing estimated future reductions with sustainability improvements
             </CardDescription>
           </CardHeader>
           <CardContent className="py-6 flex-1 flex flex-col justify-center">
@@ -284,7 +287,17 @@ export default function DashboardClient() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="h-56" />
+              <div className="h-56 flex flex-col justify-end gap-2 px-4">
+                <div className="flex items-end gap-3 h-40">
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '65%'}} />
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '55%'}} />
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '45%'}} />
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '40%'}} />
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '35%'}} />
+                  <div className="flex-1 bg-muted/50 rounded-t-lg animate-pulse" style={{height: '28%'}} />
+                </div>
+                <div className="h-3 w-full bg-muted/40 rounded-full animate-pulse" />
+              </div>
             )}
           </CardContent>
         </Card>

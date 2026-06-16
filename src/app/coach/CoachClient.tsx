@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { 
   Bot, 
   Send, 
@@ -109,6 +110,7 @@ export default function CoachClient() {
           disabled={coachHistory.length === 0}
           className="flex h-9 w-9 items-center justify-center rounded-xl bg-background border border-border/80 hover:border-destructive/30 text-muted-foreground hover:text-destructive transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           title="Reset chat log"
+          aria-label="Reset chat log"
         >
           <Trash2 className="h-4.5 w-4.5" />
         </button>
@@ -144,12 +146,31 @@ export default function CoachClient() {
                 </div>
 
                 <div className="space-y-1">
-                  <div className={`px-4 py-3 rounded-2xl text-xs font-semibold leading-relaxed whitespace-pre-line ${
+                  <div className={`px-4 py-3 rounded-2xl text-xs font-semibold leading-relaxed ${
                     isUser 
-                      ? 'bg-brand-emerald text-white rounded-tr-none' 
-                      : 'bg-muted/70 text-foreground border border-border/40 rounded-tl-none markdown-bubble'
+                      ? 'bg-brand-emerald text-white rounded-tr-none whitespace-pre-line' 
+                      : 'bg-muted/70 text-foreground border border-border/40 rounded-tl-none'
                   }`}>
-                    {msg.text}
+                    {isUser ? (
+                      msg.text
+                    ) : (
+                      <ReactMarkdown
+                        components={{
+                          h1: ({ children }) => <h1 className="text-sm font-extrabold mt-2 mb-1">{children}</h1>,
+                          h2: ({ children }) => <h2 className="text-xs font-extrabold mt-2 mb-1">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-xs font-bold mt-2 mb-1">{children}</h3>,
+                          p: ({ children }) => <p className="mb-1.5 last:mb-0">{children}</p>,
+                          ul: ({ children }) => <ul className="list-disc pl-4 space-y-1 mb-1.5">{children}</ul>,
+                          ol: ({ children }) => <ol className="list-decimal pl-4 space-y-1 mb-1.5">{children}</ol>,
+                          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                          strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                          em: ({ children }) => <em className="italic">{children}</em>,
+                          code: ({ children }) => <code className="bg-background/50 px-1 py-0.5 rounded text-[10px] font-mono">{children}</code>,
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    )}
                   </div>
                   <span className={`text-[8px] text-muted-foreground font-bold block ${isUser ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp}
@@ -216,6 +237,8 @@ export default function CoachClient() {
           <button
             type="submit"
             disabled={!input.trim() || loading}
+            aria-label="Send message"
+            title="Send message"
             className="h-11 w-11 rounded-xl bg-brand-emerald hover:bg-brand-emerald/95 text-white flex items-center justify-center shrink-0 shadow-md shadow-brand-emerald/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="h-4 w-4" />

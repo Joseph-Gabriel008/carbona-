@@ -13,12 +13,7 @@ import {
   Sparkles,
   ArrowRight,
   Leaf,
-  ShieldAlert,
-  Globe,
-  Sun,
-  Wind,
-  Zap,
-  Shield
+  ShieldAlert
 } from 'lucide-react';
 import { useCarbonaStore } from '@/lib/store';
 
@@ -152,26 +147,26 @@ export default function LandingClient() {
         >
           <div className="text-center">
             <h3 className="text-2xl md:text-4xl font-extrabold text-foreground">
-              24,500+
+              4.7t
             </h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 font-semibold">
-              Carbon Tracked (Tons)
+              Avg. Global CO₂/Person/Year
             </p>
           </div>
           <div className="text-center">
             <h3 className="text-2xl md:text-4xl font-extrabold text-foreground">
-              182,000+
+              29%
             </h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 font-semibold">
-              Challenges Completed
+              From Transportation Alone
             </p>
           </div>
           <div className="text-center">
             <h3 className="text-2xl md:text-4xl font-extrabold text-foreground">
-              4,800+
+              2t
             </h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1 font-semibold">
-              Emissions Reduced (Tons)
+              Target Per Person by 2050
             </p>
           </div>
         </motion.div>
@@ -267,11 +262,13 @@ export default function LandingClient() {
 
       {/* Footer */}
       <footer className="w-full max-w-7xl mx-auto px-6 py-8 border-t border-border/80 flex flex-col sm:flex-row items-center justify-between text-muted-foreground text-xs font-semibold z-10">
-        <p>© 2026 Carbona. Built for PromptWars Hackathon. All rights reserved.</p>
+        <p>© 2026 Carbona. All rights reserved.</p>
         <p className="mt-2 sm:mt-0 flex gap-4">
           <span>Glassmorphic Design</span>
           <span>•</span>
-          <span>Gemini AI Enabled</span>
+          <span>Gemini AI Powered</span>
+          <span>•</span>
+          <span>Open Source</span>
         </p>
       </footer>
     </div>

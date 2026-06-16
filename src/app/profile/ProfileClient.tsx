@@ -10,29 +10,14 @@ import {
   Award, 
   ShieldCheck, 
   Calendar,
-  Compass,
-  Plane,
-  ShoppingBag,
-  Utensils,
-  Zap,
-  ShieldAlert,
   Fingerprint
 } from 'lucide-react';
 import { useCarbonaStore, ALL_CHALLENGES, getXPNeededForNextLevel } from '@/lib/store';
+import { AVATAR_ICONS } from '@/lib/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-
-const AVATAR_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  compass: Compass,
-  leaf: Leaf,
-  plane: Plane,
-  'shopping-bag': ShoppingBag,
-  utensils: Utensils,
-  zap: Zap,
-  'shield-alert': ShieldAlert
-};
 
 export default function ProfileClient() {
   const router = useRouter();
@@ -47,7 +32,7 @@ export default function ProfileClient() {
   } = useCarbonaStore();
 
   const { percent, xpNeeded } = getXPNeededForNextLevel(xp);
-  const IconComponent = AVATAR_ICONS[twin.avatar] || Compass;
+  const IconComponent = AVATAR_ICONS[twin.avatar] || AVATAR_ICONS['compass'];
 
   const handleReset = () => {
     if (confirm('Are you sure you want to delete your profile data? This will reset all calculator entries and challenge achievements.')) {
